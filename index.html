@@ -74,7 +74,9 @@
                 obstacle.y += speed;
 
                 if (obstacle.y > canvas.height) {
-                    obstacles.splice(obstacles.indexOf(obstacle), 1);
+                    setTimeout(() => {
+                        obstacles.splice(obstacles.indexOf(obstacle), 1);
+                    }, 100);
                 }
             });
         }
@@ -113,7 +115,7 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft' && carX > (canvas.width - roadWidth) / 2) {
                 carX -= 10;
-            } else if (e.key === 'ArrowRight' && carX < (canvas.width + roadWidth) / 2 - carWidth) {
+            } else if (e.key === 'ArrowRight' && carX < (canvas.width - roadWidth) / 2 + roadWidth - carWidth) {
                 carX += 10;
             }
         });
