@@ -3,240 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мини-игры</title>
+    <title>Mario Game</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
             margin: 0;
-            padding: 0;
+            overflow: hidden;
+            background-color: #87CEEB;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        .game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
         }
-        .game-section {
-            display: none;
-            background-color: white;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .game-section.active {
-            display: block;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .achievements {
-            margin-top: 20px;
-            font-weight: bold;
+        .mario {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-image: url('https://www.spriters-resource.com/resources/sheets/86/89069.png');
+            background-position: 0 0;
+            background-size: 100px 100px;
+            bottom: 0;
+            left: 50px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Мини-игры</h1>
-        <div>
-            <button onclick="showGame('guessNumber')">Угадай число</button>
-            <button onclick="showGame('guessWord')">Угадай слово</button>
-            <button onclick="showGame('mathTrainer')">Математический тренажер</button>
-            <button onclick="showGame('quiz')">Викторина</button>
-        </div>
-
-        <div class="game-section" id="guessNumber">
-            <h2>Угадай число</h2>
-            <p>Угадайте число от 1 до 100.</p>
-            <input type="number" class="answer-input" placeholder="Введите число">
-            <button class="play-button">Играть</button>
-        </div>
-
-        <div class="game-section" id="guessWord">
-            <h2>Угадай слово</h2>
-            <p>Загаданное слово: <span class="word-display">_____</span></p>
-            <input type="text" class="letter-input" maxlength="1" placeholder="Введите букву">
-            <button class="guess-button">Угадать</button>
-            <p class="attempts-left">Попытки: 6</p>
-        </div>
-
-        <div class="game-section" id="mathTrainer">
-            <h2>Математический тренажер</h2>
-            <p class="question"></p>
-            <input type="number" class="answer-input" placeholder="Введите ответ">
-            <button class="submit-button">Проверить</button>
-        </div>
-
-        <div class="game-section" id="quiz">
-            <h2>Викторина</h2>
-            <p class="question"></p>
-            <div class="answers">
-                <button class="answer"></button>
-                <button class="answer"></button>
-                <button class="answer"></button>
-                <button class="answer"></button>
-            </div>
-        </div>
-
-        <div class="achievements" id="achievements"></div>
+    <div class="game-container">
+        <div class="mario" id="mario"></div>
     </div>
-
+    
     <script>
-        // Функция для переключения между играми
-        function showGame(gameId) {
-            const sections = document.querySelectorAll('.game-section');
-            sections.forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(gameId).classList.add('active');
-            if (gameId === 'guessNumber') startGuessNumber();
-            if (gameId === 'guessWord') startGuessWord();
-            if (gameId === 'mathTrainer') startMathTrainer();
-            if (gameId === 'quiz') loadQuestion();
-        }
+        const mario = document.getElementById('mario');
+        let isJumping = false;
+        let position = 0;
 
-        // Угадай число
-        let secretNumber, attempts;
+        function jump() {
+            if (isJumping) return;
 
-        function startGuessNumber() {
-            secretNumber = Math.floor(Math.random() * 100) + 1;
-            attempts = 0;
-            document.querySelector('#guessNumber .answer-input').value = '';
-        }
+            isJumping = true;
+            let upInterval = setInterval(() => {
+                if (position >= 150) {
+                    clearInterval(upInterval);
 
-        document.querySelector('#guessNumber .play-button').addEventListener('click', function() {
-            const userGuess = parseInt(document.querySelector('#guessNumber .answer-input').value);
-            attempts++;
-            if (userGuess === secretNumber) {
-                alert(`Поздравляем! Вы угадали число ${secretNumber} за ${attempts} попыток.`);
-                document.getElementById('achievements').innerHTML += '<p>Достижение: Угадал число!</p>';
-                startGuessNumber();
-            } else if (userGuess > secretNumber) {
-                alert('Слишком много. Попробуйте снова!');
-            } else {
-                alert('Слишком мало. Попробуйте снова!');
-            }
-        });
-
-        // Угадай слово
-        const word = 'МАШИНА';
-        let guessedWord, attemptsLeft;
-
-        function startGuessWord() {
-            guessedWord = Array(word.length).fill('_');
-            attemptsLeft = 6;
-            document.querySelector('#guessWord .word-display').textContent = guessedWord.join(' ');
-            document.querySelector('#guessWord .attempts-left').textContent = `Попытки: ${attemptsLeft}`;
-            document.querySelector('#guessWord .letter-input').value = '';
-        }
-
-        document.querySelector('#guessWord .guess-button').addEventListener('click', function() {
-            const letter = document.querySelector('#guessWord .letter-input').value.toUpperCase();
-            let correctGuess = false;
-
-            for (let i = 0; i < word.length; i++) {
-                if (word[i] === letter) {
-                    guessedWord[i] = letter;
-                    correctGuess = true;
+                    let downInterval = setInterval(() => {
+                        if (position <= 0) {
+                            clearInterval(downInterval);
+                            isJumping = false;
+                        } else {
+                            position -= 20;
+                            mario.style.bottom = position + 'px';
+                        }
+                    }, 20);
+                } else {
+                    position += 20;
+                    mario.style.bottom = position + 'px';
                 }
-            }
-
-            if (!correctGuess) {
-                attemptsLeft--;
-                alert(`Неправильно! Осталось попыток: ${attemptsLeft}`);
-            }
-
-            document.querySelector('#guessWord .word-display').textContent = guessedWord.join(' ');
-            document.querySelector('#guessWord .attempts-left').textContent = `Попытки: ${attemptsLeft}`;
-
-            if (guessedWord.join('') === word) {
-                alert('Поздравляем! Вы угадали слово!');
-                document.getElementById('achievements').innerHTML += '<p>Достижение: Угадал слово!</p>';
-                startGuessWord();
-            }
-
-            if (attemptsLeft === 0) {
-                alert('Вы проиграли! Загаданное слово было: ' + word);
-                startGuessWord();
-            }
-
-            document.querySelector('#guessWord .letter-input').value = '';
-        });
-
-        // Математический тренажер
-        let num1, num2;
-
-        function startMathTrainer() {
-            generateMathQuestion();
-            document.querySelector('#mathTrainer .answer-input').value = '';
+            }, 20);
         }
 
-        function generateMathQuestion() {
-            num1 = Math.floor(Math.random() * 10) + 1;
-            num2 = Math.floor(Math.random() * 10) + 1;
-            document.querySelector('#mathTrainer .question').textContent = `${num1} + ${num2} = ?`;
+        function control(e) {
+            if (e.keyCode === 32) { // пробел
+                jump();
+            }
         }
 
-        document.querySelector('#mathTrainer .submit-button').addEventListener('click', function() {
-            const userAnswer = parseInt(document.querySelector('#mathTrainer .answer-input').value);
-            if (userAnswer === num1 + num2) {
-                alert('Правильно!');
-                document.getElementById('achievements').innerHTML += '<p>Достижение: Правильный ответ в математике!</p>';
-            } else {
-                alert('Неправильно! Попробуйте снова.');
-            }
-            generateMathQuestion();
-        });
-
-        // Викторина
-        const quizQuestions = [
-            {
-                question: 'Столица Франции?',
-                options: ['Лондон', 'Берлин', 'Париж', 'Мадрид'],
-                correct: 2
-            },
-            {
-                question: 'Сколько планет в Солнечной системе?',
-                options: ['7', '8', '9', '10'],
-                correct: 1
-            },
-            {
-                question: 'Какой элемент имеет символ O?',
-                options: ['Золото', 'Кислород', 'Серебро', 'Углерод'],
-                correct: 1
-            }
-        ];
-
-        let currentQuestion = 0;
-
-        function loadQuestion() {
-            const questionObj = quizQuestions[currentQuestion];
-            document.querySelector('#quiz .question').textContent = questionObj.question;
-            const buttons = document.querySelectorAll('#quiz .answer');
-            buttons.forEach((button, index) => {
-                button.textContent = questionObj.options[index];
-                button.onclick = function() {
-                    if (index === questionObj.correct) {
-                        alert('Правильно!');
-                        document.getElementById('achievements').innerHTML += '<p>Достижение: Угадал вопрос викторины!</p>';
-                    } else {
-                        alert('Неправильно!');
-                    }
-                    currentQuestion = (currentQuestion + 1) % quizQuestions.length;
-                    loadQuestion();
-                };
-            });
-        }
-
-        // Показать первую игру по умолчанию
-        showGame('guessNumber');
+        document.addEventListener('keydown', control);
     </script>
 </body>
 </html>
