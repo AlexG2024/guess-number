@@ -1,32 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Угадай число</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        input, button {
+            font-size: 16px;
+            padding: 5px 10px;
+        }
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        #attempts {
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>Угадай число от 1 до 100</h1>
+    <p>Введите число и нажмите "Проверить" или клавишу Enter</p>
     <input type="number" id="guess" min="1" max="100">
     <button onclick="checkGuess()">Проверить</button>
     <p id="message"></p>
-
+    <p id="attempts"></p>
+    <button onclick="restartGame()" id="restartButton" style="display: none;">Начать заново</button>
     <script>
-        var numberToGuess = Math.floor(Math.random() * 100) + 1;
-        document.getElementById('guess').value = '';
+        var numberToGuess, attempts;
+
+        function initGame() {
+            numberToGuess = Math.floor(Math.random() * 100) + 1;
+            attempts = 0;
+            document.getElementById('guess').value = '';
+            document.getElementById('message').textContent = '';
+            document.getElementById('attempts').textContent = '';
+            document.getElementById('restartButton').style.display = 'none';
+            document.getElementById('guess').focus();
+        }
 
         function checkGuess() {
-            var guess = parseInt(document.getElementById('guess').value);
-            if (isNaN(guess)) {
-                document.getElementById('message').textContent = 'Введите число!';
+            var guessInput = document.getElementById('guess');
+            var guess = parseInt(guessInput.value);
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                document.getElementById('message').textContent = 'Пожалуйста, введите число от 1 до 100!';
                 return;
             }
+            attempts++;
             if (guess === numberToGuess) {
                 document.getElementById('message').textContent = 'Победа! Число было ' + numberToGuess;
+                document.getElementById('restartButton').style.display = 'inline';
+                guessInput.disabled = true;
             } else if (guess > numberToGuess) {
                 document.getElementById('message').textContent = 'Загаданное число меньше';
             } else {
                 document.getElementById('message').textContent = 'Загаданное число больше';
             }
+            document.getElementById('attempts').textContent = 'Попыток: ' + attempts;
+            guessInput.value = '';
+            guessInput.focus();
         }
+
+        function restartGame() {
+            document.getElementById('guess').disabled = false;
+            initGame();
+        }
+
+        document.getElementById('guess').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkGuess();
+            }
+        });
+
+        initGame();
     </script>
 </body>
 </html>
