@@ -1,28 +1,33 @@
+/* style.css */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
-    color: #333;
+    background-color: #FFA500; /* Оранжевый фон */
+    color: #000; /* Черный текст */
+    line-height: 1.6;
     padding: 20px;
 }
 
-h1 {
+header {
     text-align: center;
 }
 
-#guess {
-    margin-top: 10px;
-    padding: 5px;
-    font-size: 16px;
+h1 {
+    color: #FFF; /* Белый цвет заголовка */
+}
+
+main {
+    margin-top: 50px;
 }
 
 button {
-    margin-top: 10px;
+    background-color: #000; /* Черный фон кнопки */
+    color: #FFF; /* Белый текст кнопки */
+    border: none;
     padding: 10px 20px;
-    font-size: 18px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-#message {
-    margin-top: 10px;
-    font-weight: bold;
+button:hover {
+    background-color: #555; /* Темно-серый цвет при наведении */
 }
