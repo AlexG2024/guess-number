@@ -146,6 +146,112 @@
 
         // Показать первую игру по умолчанию
         showGame('guessNumber');
+
+        // Угадай число
+        let secretNumber = Math.floor(Math.random() * 100) + 1;
+        let attempts = 0;
+
+        document.querySelector('#guessNumber .play-button').addEventListener('click', function() {
+            const userGuess = parseInt(document.querySelector('#guessNumber .answer-input').value);
+            attempts++;
+            if (userGuess === secretNumber) {
+                alert(`Поздравляем! Вы угадали число ${secretNumber} за ${attempts} попыток.`);
+                secretNumber = Math.floor(Math.random() * 100) + 1;
+                attempts = 0;
+            } else if (userGuess > secretNumber) {
+                alert('Слишком много. Попробуйте снова!');
+            } else {
+                alert('Слишком мало. Попробуйте снова!');
+            }
+        });
+
+        // Угадай слово
+        const word = 'МАШИНА'; // Загаданное слово
+        let guessedWord = Array(word.length).fill('_');
+        let attemptsLeft = 6;
+
+        document.querySelector('#guessWord .guess-button').addEventListener('click', function() {
+            const letter = document.querySelector('#guessWord .letter-input').value.toUpperCase();
+            let correctGuess = false;
+
+            for (let i = 0; i < word.length; i++) {
+                if (word[i] === letter) {
+                    guessedWord[i] = letter;
+                    correctGuess = true;
+                }
+            }
+
+            if (!correctGuess) {
+                attemptsLeft--;
+                alert(`Неправильно! Осталось попыток: ${attemptsLeft}`);
+            }
+
+            document.querySelector('#guessWord .word-display').textContent = guessedWord.join(' ');
+
+            if (guessedWord.join('') === word) {
+                alert('Поздравляем! Вы угадали слово!');
+                guessedWord = Array(word.length).fill('_');
+                attemptsLeft = 6;
+            }
+
+            if (attemptsLeft === 0) {
+                alert('Вы проиграли! Загаданное слово было: ' + word);
+                guessedWord = Array(word.length).fill('_');
+                attemptsLeft = 6;
+            }
+
+            document.querySelector('#guessWord .letter-input').value = '';
+        });
+
+        // Математический тренажер
+        let num1 = Math.floor(Math.random() * 10) + 1;
+        let num2 = Math.floor(Math.random() * 10) + 1;
+        document.querySelector('#mathTrainer .question').textContent = `${num1} + ${num2} = ?`;
+
+        document.querySelector('#mathTrainer .submit-button').addEventListener('click', function() {
+            const userAnswer = parseInt(document.querySelector('#mathTrainer .answer-input').value);
+            if (userAnswer === num1 + num2) {
+                alert('Правильно!');
+            } else {
+                alert('Неправильно! Попробуйте снова.');
+            }
+            num1 = Math.floor(Math.random() * 10) + 1;
+            num2 = Math.floor(Math.random() * 10) + 1;
+            document.querySelector('#mathTrainer .question').textContent = `${num1} + ${num2} = ?`;
+            document.querySelector('#mathTrainer .answer-input').value = '';
+        });
+
+        // Викторина
+        const quizQuestions = [
+            {
+                question: 'Столица Франции?',
+                options: ['Лондон', 'Берлин', 'Париж', 'Мадрид'],
+                correct: 2
+            },
+            // Можно добавить больше вопросов
+        ];
+
+        let currentQuestion = 0;
+
+        function loadQuestion() {
+            const questionObj = quizQuestions[currentQuestion];
+            document.querySelector('#quiz .question').textContent = questionObj.question;
+            const buttons = document.querySelectorAll('#quiz .answer');
+            buttons.forEach((button, index) => {
+                button.textContent = questionObj.options[index];
+                button.onclick = function() {
+                    if (index === questionObj.correct) {
+                        alert('Правильно!');
+                    } else {
+                        alert('Неправильно!');
+                    }
+                    currentQuestion = (currentQuestion + 1) % quizQuestions.length;
+                    loadQuestion();
+                };
+            });
+        }
+
+        loadQuestion();
     </script>
 </body>
 </html>
