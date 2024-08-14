@@ -3,92 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Веселая логическая игра</title>
+    <title>Угадай число</title>
     <style>
-        .container {
-            display: grid;
-            grid-template-columns: repeat(3, 100px);
-            grid-template-rows: repeat(3, 100px);
-            gap: 5px;
-            margin: 20px auto;
-            max-width: 315px;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
         }
-
-        .piece {
-            width: 100px;
-            height: 100px;
-            background-color: #ddd;
-            border: 1px solid #aaa;
-            box-sizing: border-box;
+        .game-container {
+            flex: 2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .sidebar {
+            flex: 1;
+            background-color: #2a2a2a;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        h1 {
+            color: #ff8c00;
+            text-align: center;
+        }
+        input, button {
+            font-size: 18px;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
+        input {
+            background-color: #333;
+            color: #fff;
+            width: 200px;
+        }
+        button {
+            background-color: #ff8c00;
+            color: #1a1a1a;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
-
-        #puzzle {
-            display: grid;
-            grid-template-columns: repeat(3, 100px);
-            grid-template-rows: repeat(3, 100px);
-            gap: 5px;
-            margin: 20px auto;
-            max-width: 315px;
+        button:hover {
+            background-color: #ffa500;
+        }
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #ff8c00;
+        }
+        #attempts, #guessedNumbers {
+            margin-top: 20px;
+        }
+        .guessed-number {
+            background-color: #ff8c00;
+            color: #1a1a1a;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 3px;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
-    <h1>Веселая логическая игра</h1>
-    <p>Перетащите кусочки изображения на правильные места!</p>
-    <div id="puzzle" class="container">
-        <!-- Кусочки изображения -->
-        <div class="piece" id="piece1" draggable="true" data-position="0"></div>
-        <div class="piece" id="piece2" draggable="true" data-position="1"></div>
-        <div class="piece" id="piece3" draggable="true" data-position="2"></div>
-        <div class="piece" id="piece4" draggable="true" data-position="3"></div>
-        <div class="piece" id="piece5" draggable="true" data-position="4"></div>
-        <div class="piece" id="piece6" draggable="true" data-position="5"></div>
-        <div class="piece" id="piece7" draggable="true" data-position="6"></div>
-        <div class="piece" id="piece8" draggable="true" data-position="7"></div>
-        <div class="piece" id="piece9" draggable="true" data-position="8"></div>
+    <div class="game-container">
+        <h1>Угадай число от 1 до 100</h1>
+        <input type="number" id="guess" min="1" max="100" placeholder="Введите число">
+        <button onclick="checkGuess()">Проверить</button>
+        <p id="message"></p>
+        <button onclick="restartGame()" id="restartButton" style="display: none;">Начать заново</button>
+    </div>
+    <div class="sidebar">
+        <h2>Статистика</h2>
+        <p id="attempts">Попыток: 0</p>
+        <h3>Отгаданные числа:</h3>
+        <div id="guessedNumbers"></div>
     </div>
 
     <script>
-        const pieces = document.querySelectorAll('.piece');
-        let draggedPiece = null;
+        var numberToGuess, attempts, guessedNumbers;
 
-        pieces.forEach(piece => {
-            piece.addEventListener('dragstart', (e) => {
-                draggedPiece = e.target;
-                e.dataTransfer.setData('text/plain', draggedPiece.id);
+        function initGame() {
+            numberToGuess = Math.floor(Math.random() * 100) + 1;
+            attempts = 0;
+            guessedNumbers = [];
+            document.getElementById('guess').value = '';
+            document.getElementById('message').textContent = '';
+            document.getElementById('attempts').textContent = 'Попыток: 0';
+            document.getElementById('guessedNumbers').innerHTML = '';
+            document.getElementById('restartButton').style.display = 'none';
+            document.getElementById('guess').focus();
+        }
+
+        function checkGuess() {
+            var guessInput = document.getElementById('guess');
+            var guess = parseInt(guessInput.value);
+            if (isNaN(guess) || guess < 1 || guess > 100) {
+                document.getElementById('message').textContent = 'Пожалуйста, введите число от 1 до 100!';
+                return;
+            }
+            attempts++;
+            guessedNumbers.push(guess);
+            updateSidebar();
+
+            if (guess === numberToGuess) {
+                document.getElementById('message').textContent = 'Победа! Число было ' + numberToGuess;
+                document.getElementById('restartButton').style.display = 'inline';
+                guessInput.disabled = true;
+            } else if (guess > numberToGuess) {
+                document.getElementById('message').textContent = 'Загаданное число меньше';
+            } else {
+                document.getElementById('message').textContent = 'Загаданное число больше';
+            }
+            guessInput.value = '';
+            guessInput.focus();
+        }
+
+        function updateSidebar() {
+            document.getElementById('attempts').textContent = 'Попыток: ' + attempts;
+            var guessedNumbersContainer = document.getElementById('guessedNumbers');
+            guessedNumbersContainer.innerHTML = '';
+            guessedNumbers.forEach(function(num) {
+                var numSpan = document.createElement('span');
+                numSpan.textContent = num;
+                numSpan.className = 'guessed-number';
+                guessedNumbersContainer.appendChild(numSpan);
             });
+        }
 
-            piece.addEventListener('dragover', (e) => {
-                e.preventDefault();
-            });
+        function restartGame() {
+            document.getElementById('guess').disabled = false;
+            initGame();
+        }
 
-            piece.addEventListener('drop', (e) => {
-                e.preventDefault();
-                const targetId = e.target.id;
-                const draggedId = e.dataTransfer.getData('text/plain');
-                const targetPiece = document.getElementById(targetId);
-                const draggedPiece = document.getElementById(draggedId);
-
-                // Меняем местами элементы
-                const targetPosition = targetPiece.dataset.position;
-                const draggedPosition = draggedPiece.dataset.position;
-                
-                targetPiece.dataset.position = draggedPosition;
-                draggedPiece.dataset.position = targetPosition;
-
-                const temp = targetPiece.style.backgroundImage;
-                targetPiece.style.backgroundImage = draggedPiece.style.backgroundImage;
-                draggedPiece.style.backgroundImage = temp;
-            });
+        document.getElementById('guess').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkGuess();
+            }
         });
 
-        // Устанавливаем фон изображения для каждого кусочка
-        pieces.forEach((piece, index) => {
-            piece.style.backgroundImage = `url('https://www.reddit.com/media?url=https%3A%2F%2Fpreview.redd.it%2Fsuper-corgi-v0-al4z2fctylja1.jpg%3Fwidth%3D1024%26format%3Dpjpg%26auto%3Dwebp%26s%3Da5fb996d207e9e288ee4523edd74fb867eb5969e')`;
-            piece.style.backgroundPosition = `-${(index % 3) * 100}px -${Math.floor(index / 3) * 100}px`;
-            piece.style.backgroundSize = '300px 300px';
-        });
+        initGame();
     </script>
 </body>
 </html>
