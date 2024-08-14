@@ -3,83 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Угадай число</title>
+    <title>Страница с изображением и цветом</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
+            background-color: #f0f8ff; /* Светло-голубой фон */
+            color: #333; /* Тёмно-серый цвет текста */
+            line-height: 1.6;
             padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #4169e1; /* Королевский синий цвет для заголовка */
             text-align: center;
         }
-        input, button {
-            font-size: 16px;
-            padding: 5px 10px;
+        .image-container {
+            text-align: center;
+            margin: 20px 0;
         }
-        #message {
-            margin-top: 20px;
-            font-weight: bold;
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 5px solid #4169e1; /* Синяя рамка вокруг изображения */
+            border-radius: 10px; /* Скругленные углы */
         }
-        #attempts {
-            margin-top: 10px;
+        p {
+            background-color: #ffffff; /* Белый фон для параграфа */
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Лёгкая тень */
         }
     </style>
 </head>
 <body>
-    <h1>Угадай число от 1 до 100</h1>
-    <p>Введите число и нажмите "Проверить" или клавишу Enter</p>
-    <input type="number" id="guess" min="1" max="100">
-    <button onclick="checkGuess()">Проверить</button>
-    <p id="message"></p>
-    <p id="attempts"></p>
-    <button onclick="restartGame()" id="restartButton" style="display: none;">Начать заново</button>
-    <script>
-        var numberToGuess, attempts;
-
-        function initGame() {
-            numberToGuess = Math.floor(Math.random() * 100) + 1;
-            attempts = 0;
-            document.getElementById('guess').value = '';
-            document.getElementById('message').textContent = '';
-            document.getElementById('attempts').textContent = '';
-            document.getElementById('restartButton').style.display = 'none';
-            document.getElementById('guess').focus();
-        }
-
-        function checkGuess() {
-            var guessInput = document.getElementById('guess');
-            var guess = parseInt(guessInput.value);
-            if (isNaN(guess) || guess < 1 || guess > 100) {
-                document.getElementById('message').textContent = 'Пожалуйста, введите число от 1 до 100!';
-                return;
-            }
-            attempts++;
-            if (guess === numberToGuess) {
-                document.getElementById('message').textContent = 'Победа! Число было ' + numberToGuess;
-                document.getElementById('restartButton').style.display = 'inline';
-                guessInput.disabled = true;
-            } else if (guess > numberToGuess) {
-                document.getElementById('message').textContent = 'Загаданное число меньше';
-            } else {
-                document.getElementById('message').textContent = 'Загаданное число больше';
-            }
-            document.getElementById('attempts').textContent = 'Попыток: ' + attempts;
-            guessInput.value = '';
-            guessInput.focus();
-        }
-
-        function restartGame() {
-            document.getElementById('guess').disabled = false;
-            initGame();
-        }
-
-        document.getElementById('guess').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                checkGuess();
-            }
-        });
-
-        initGame();
-    </script>
+    <h1>Добро пожаловать на мою страницу</h1>
+    
+    <div class="image-container">
+        <!-- Замените URL на адрес вашего изображения -->
+        <img src="https://example.com/path-to-your-image.jpg" alt="Описание изображения">
+    </div>
+    
+    <p>
+        Это пример параграфа с текстом. Вы можете изменить этот текст на любой другой, 
+        который вам нужен. Обратите внимание на цветовое оформление страницы и стилизацию элементов.
+    </p>
 </body>
 </html>
