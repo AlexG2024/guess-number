@@ -1,113 +1,33 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en-us">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mario Game Level</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background-color: #87CEEB;
-        }
-        .game-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #87CEEB;
-        }
-        .mario {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background-image: url('https://www.spriters-resource.com/resources/sheets/86/89069.png');
-            background-position: 0 0;
-            background-size: 100px 100px;
-            bottom: 0;
-            left: 50px;
-        }
-        .platform {
-            position: absolute;
-            width: 200px;
-            height: 20px;
-            background-color: #654321;
-        }
-        #platform1 {
-            bottom: 100px;
-            left: 150px;
-        }
-        #platform2 {
-            bottom: 200px;
-            left: 400px;
-        }
-        #platform3 {
-            bottom: 300px;
-            left: 650px;
-        }
-    </style>
-</head>
-<body>
-    <div class="game-container">
-        <div class="mario" id="mario"></div>
-        <div class="platform" id="platform1"></div>
-        <div class="platform" id="platform2"></div>
-        <div class="platform" id="platform3"></div>
-    </div>
+    <meta charset="utf-8">
+    <title>Full Screen Mario</title>
+
+    <link href="mario.css" rel="stylesheet">
+    <link href="Fonts/stylesheet.css" rel="stylesheet">
+
+    <script src="data.js"></script>
+    <script src="editor.js"></script>
+    <script src="gamepad.js"></script>
+    <script src="generator.js"></script>
+    <script src="library.js"></script>
+    <script src="load.js"></script>
+    <script src="maps.js"></script>
+    <script src="mario.js"></script>
+    <script src="sprites.js"></script>
+    <script src="things.js"></script>
+    <script src="toned.js"></script>
+    <script src="triggers.js"></script>
+    <script src="upkeep.js"></script>
+    <script src="utility.js"></script>
     
-    <script>
-        const mario = document.getElementById('mario');
-        let isJumping = false;
-        let position = 0;
-        let left = 50;
+    <!-- Refactored libraries/frameworks under /src -->
+    <script src="src/AudioPlayr/AudioPlayr.js"></script>
+    <script src="src/TimeHandlr/TimeHandlr.js"></script>
+    <script src="src/QuadsKeepr/QuadsKeepr.js"></script>
 
-        function jump() {
-            if (isJumping) return;
-
-            isJumping = true;
-            let upInterval = setInterval(() => {
-                if (position >= 150) {
-                    clearInterval(upInterval);
-
-                    let downInterval = setInterval(() => {
-                        if (position <= 0) {
-                            clearInterval(downInterval);
-                            isJumping = false;
-                        } else {
-                            position -= 20;
-                            mario.style.bottom = position + 'px';
-                        }
-                    }, 20);
-                } else {
-                    position += 20;
-                    mario.style.bottom = position + 'px';
-                }
-            }, 20);
-        }
-
-        function moveLeft() {
-            left -= 10;
-            mario.style.left = left + 'px';
-        }
-
-        function moveRight() {
-            left += 10;
-            mario.style.left = left + 'px';
-        }
-
-        function control(e) {
-            if (e.keyCode === 32) { // пробел для прыжка
-                jump();
-            }
-            if (e.keyCode === 37) { // стрелка влево
-                moveLeft();
-            }
-            if (e.keyCode === 39) { // стрелка вправо
-                moveRight();
-            }
-        }
-
-        document.addEventListener('keydown', control);
-    </script>
+</head>
+<body onload="FullScreenMario()">
 </body>
 </html>
