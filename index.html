@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Угадай число</title>
+    <title>Мини-игры</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -11,144 +11,79 @@
             color: #ffffff;
             margin: 0;
             padding: 0;
-            display: flex;
-            height: 100vh;
         }
-        .game-container {
-            flex: 2;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .sidebar {
-            flex: 1;
-            background-color: #2a2a2a;
-            padding: 20px;
-            overflow-y: auto;
         }
         h1 {
             color: #ff8c00;
             text-align: center;
         }
-        input, button {
-            font-size: 18px;
-            padding: 10px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 5px;
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
         }
-        input {
-            background-color: #333;
-            color: #fff;
-            width: 200px;
+        .game-card {
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
         }
-        button {
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+        .game-title {
+            color: #ff8c00;
+            margin-bottom: 10px;
+        }
+        .game-description {
+            margin-bottom: 20px;
+        }
+        .play-button {
             background-color: #ff8c00;
             color: #1a1a1a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
             transition: background-color 0.3s;
         }
-        button:hover {
+        .play-button:hover {
             background-color: #ffa500;
-        }
-        #message {
-            margin-top: 20px;
-            font-weight: bold;
-            color: #ff8c00;
-        }
-        #attempts, #guessedNumbers {
-            margin-top: 20px;
-        }
-        .guessed-number {
-            background-color: #ff8c00;
-            color: #1a1a1a;
-            padding: 5px 10px;
-            margin: 5px;
-            border-radius: 3px;
-            display: inline-block;
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>Угадай число от 1 до 100</h1>
-        <input type="number" id="guess" min="1" max="100" placeholder="Введите число">
-        <button onclick="checkGuess()">Проверить</button>
-        <p id="message"></p>
-        <button onclick="restartGame()" id="restartButton" style="display: none;">Начать заново</button>
+    <div class="container">
+        <h1>Мини-игры</h1>
+        <div class="games-grid">
+            <div class="game-card">
+                <h2 class="game-title">Угадай число</h2>
+                <p class="game-description">Попробуйте угадать число от 1 до 100 за минимальное количество попыток.</p>
+                <button class="play-button" onclick="location.href='guess_number.html'">Играть</button>
+            </div>
+            <div class="game-card">
+                <h2 class="game-title">Угадай слово</h2>
+                <p class="game-description">Отгадайте загаданное слово по буквам, как в игре "Виселица".</p>
+                <button class="play-button" onclick="location.href='guess_word.html'">Играть</button>
+            </div>
+            <div class="game-card">
+                <h2 class="game-title">Математический тренажер</h2>
+                <p class="game-description">Решайте математические примеры на время и улучшайте свои навыки.</p>
+                <button class="play-button" onclick="location.href='math_trainer.html'">Играть</button>
+            </div>
+            <div class="game-card">
+                <h2 class="game-title">Викторина</h2>
+                <p class="game-description">Проверьте свои знания в различных областях, отвечая на вопросы.</p>
+                <button class="play-button" onclick="location.href='quiz.html'">Играть</button>
+            </div>
+        </div>
     </div>
-    <div class="sidebar">
-        <h2>Статистика</h2>
-        <p id="attempts">Попыток: 0</p>
-        <h3>Отгаданные числа:</h3>
-        <div id="guessedNumbers"></div>
-    </div>
-
-    <script>
-        var numberToGuess, attempts, guessedNumbers;
-
-        function initGame() {
-            numberToGuess = Math.floor(Math.random() * 100) + 1;
-            attempts = 0;
-            guessedNumbers = [];
-            document.getElementById('guess').value = '';
-            document.getElementById('message').textContent = '';
-            document.getElementById('attempts').textContent = 'Попыток: 0';
-            document.getElementById('guessedNumbers').innerHTML = '';
-            document.getElementById('restartButton').style.display = 'none';
-            document.getElementById('guess').focus();
-        }
-
-        function checkGuess() {
-            var guessInput = document.getElementById('guess');
-            var guess = parseInt(guessInput.value);
-            if (isNaN(guess) || guess < 1 || guess > 100) {
-                document.getElementById('message').textContent = 'Пожалуйста, введите число от 1 до 100!';
-                return;
-            }
-            attempts++;
-            guessedNumbers.push(guess);
-            updateSidebar();
-
-            if (guess === numberToGuess) {
-                document.getElementById('message').textContent = 'Победа! Число было ' + numberToGuess;
-                document.getElementById('restartButton').style.display = 'inline';
-                guessInput.disabled = true;
-            } else if (guess > numberToGuess) {
-                document.getElementById('message').textContent = 'Загаданное число меньше';
-            } else {
-                document.getElementById('message').textContent = 'Загаданное число больше';
-            }
-            guessInput.value = '';
-            guessInput.focus();
-        }
-
-        function updateSidebar() {
-            document.getElementById('attempts').textContent = 'Попыток: ' + attempts;
-            var guessedNumbersContainer = document.getElementById('guessedNumbers');
-            guessedNumbersContainer.innerHTML = '';
-            guessedNumbers.forEach(function(num) {
-                var numSpan = document.createElement('span');
-                numSpan.textContent = num;
-                numSpan.className = 'guessed-number';
-                guessedNumbersContainer.appendChild(numSpan);
-            });
-        }
-
-        function restartGame() {
-            document.getElementById('guess').disabled = false;
-            initGame();
-        }
-
-        document.getElementById('guess').addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                checkGuess();
-            }
-        });
-
-        initGame();
-    </script>
 </body>
 </html>
