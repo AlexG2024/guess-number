@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mario Game</title>
+    <title>Mario Game Level</title>
     <style>
         body {
             margin: 0;
@@ -15,6 +15,7 @@
             width: 100vw;
             height: 100vh;
             overflow: hidden;
+            background-color: #87CEEB;
         }
         .mario {
             position: absolute;
@@ -26,17 +27,39 @@
             bottom: 0;
             left: 50px;
         }
+        .platform {
+            position: absolute;
+            width: 200px;
+            height: 20px;
+            background-color: #654321;
+        }
+        #platform1 {
+            bottom: 100px;
+            left: 150px;
+        }
+        #platform2 {
+            bottom: 200px;
+            left: 400px;
+        }
+        #platform3 {
+            bottom: 300px;
+            left: 650px;
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
         <div class="mario" id="mario"></div>
+        <div class="platform" id="platform1"></div>
+        <div class="platform" id="platform2"></div>
+        <div class="platform" id="platform3"></div>
     </div>
     
     <script>
         const mario = document.getElementById('mario');
         let isJumping = false;
         let position = 0;
+        let left = 50;
 
         function jump() {
             if (isJumping) return;
@@ -62,9 +85,25 @@
             }, 20);
         }
 
+        function moveLeft() {
+            left -= 10;
+            mario.style.left = left + 'px';
+        }
+
+        function moveRight() {
+            left += 10;
+            mario.style.left = left + 'px';
+        }
+
         function control(e) {
-            if (e.keyCode === 32) { // пробел
+            if (e.keyCode === 32) { // пробел для прыжка
                 jump();
+            }
+            if (e.keyCode === 37) { // стрелка влево
+                moveLeft();
+            }
+            if (e.keyCode === 39) { // стрелка вправо
+                moveRight();
             }
         }
 
